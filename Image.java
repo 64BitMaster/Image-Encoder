@@ -121,11 +121,13 @@ public class Image {
 		int newValue, i, j;
 		newValue = i = j = 0;
 		
-		for (i = 0, j = 0; i <= currentMaxValue - interval; i = i + interval, j++) {
-            if (currentValue >= i && currentValue <= i + interval) {
+		// Find interval in which current value falls into
+		for (i = 0, j = 0; i <= (currentMaxValue - interval); i = (i + interval), j++) {
+            if (currentValue >= i && currentValue <= (i + interval)) {
             	newValue = j;
                 break;
             }
+            
             if (currentValue == currentMaxValue) {
             	newValue = (newMax-1);
             	break;
@@ -142,7 +144,7 @@ public class Image {
 		
 		for (int i = 0; i < this.height; i++) {
             for (int j = 0; j < this.width; j++) {
-            	returnData[i][j] = newDecodedValue(this.maxValue, interval, this.data[i][j]);
+            	returnData[i][j] = newDecodedValue(this.data[i][j], this.maxValue, interval);
             }
         }
 		
@@ -150,14 +152,14 @@ public class Image {
 	}
 	
 	// Helper function for restoring values in an interval
-	public int newDecodedValue(int currentMaxValue, int interval, int currentValue) {
+	public int newDecodedValue(int currentValue, int currentMaxValue, int interval) {
 		
 		int newValue, i, j;
 		newValue = i = j = 0;
 		
-		for (i = 0, j = 0; j < currentMaxValue; i = i + interval, j++) {
+		for (i = 0, j = 0; j < currentMaxValue; i = (i + interval), j++) {
 			if (currentValue == j) {
-				newValue = (int)(i + ((i + interval)/currentMaxValue));
+				newValue = (i + ((i + interval)/currentMaxValue));
                 break;
             }
         }
@@ -166,18 +168,25 @@ public class Image {
 	
 	// Finds the distortion between original images and decoded images
 	 public int calculateDistortion(Image original) {
-		 int sumOfDif = 0;
+		 
+		 int sumOfErrorSquared = 0;
+		 int average = 0;
+		 
 		 for(int i = 0; i < this.height; i++){
 			 for(int j = 0; j < this.width; j++){
-				 sumOfDif += Math.abs((original.data[i][j] - this.data[i][j]));
+				 sumOfErrorSquared += Math.pow(Math.abs((original.data[i][j] - this.data[i][j])), 2);
 			 }
 		 }
-		 return (sumOfDif/(this.height*this.width));
+		 average = (sumOfErrorSquared/(this.height*this.width));
+		 
+		 return average;
 	 }
 	
 	 // Creates an error image that shows the differences between the original and reconstructed images
 	public int [][] createErrorImage(int [][] original, int [][] reconstructed, int height, int width) {
-		int [][] error = new int [height][width];	       
+		
+		int [][] error = new int [height][width];	      
+		
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
 				error[i][j] = Math.abs(original[i][j] - reconstructed[i][j]);
@@ -188,15 +197,17 @@ public class Image {
 		
 	// Helper function that finds the maximum value for the error images
 	public int findMax(int [][] data, int height, int width) {
-		int max = 0;
+		
+		int currentMax = 0;
+		
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
-				if (data[i][j] > max) {
-					max = data[i][j];
+				if (data[i][j] > currentMax) {
+					currentMax = data[i][j];
 				}
 			}
 		}
-		return max;
+		return currentMax;
 	}
 	
 }
