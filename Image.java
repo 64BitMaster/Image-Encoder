@@ -16,7 +16,7 @@ public class Image {
 	String filename = null;
 	String imageInfo = null;
 	
-	
+	// Constructor for opening a file given its filename
 	Image(String filename) throws FileNotFoundException, IOException {
 		this.filename = filename;
 		
@@ -50,7 +50,10 @@ public class Image {
 		
 	}
 	
+	// Constructor for Encoded or Decoded images (requires an image to be passed that will encoded or decoded based on boolean value
 	Image(Image image, int nextMaxValue, boolean encoderOrDecoder, String tempName) {
+		// If boolean is true, we're encoding, if false, decoding
+		// String is just to keep consistency between naming schemes of files
 		
 		if (encoderOrDecoder == true) {
 			this.data = image.encoder(nextMaxValue);
@@ -68,6 +71,7 @@ public class Image {
 		
 	}
 	
+	// Constructor for creating error image given original and decoded images
 	Image(Image originalImage, Image decodedImage, int encodedRate) {
 		this.data = this.createErrorImage(originalImage.data, decodedImage.data, originalImage.width, originalImage.height);
 		this.height = originalImage.height;
@@ -77,6 +81,7 @@ public class Image {
 		this.imageInfo = originalImage.imageInfo;
 	}
 	
+	// Save data to .pgma file
 	public void saveFile() throws IOException {
 		FileWriter output = new FileWriter("images/" + filename + ".pgma");
 		BufferedWriter writer = new BufferedWriter(output);
@@ -95,6 +100,7 @@ public class Image {
 		writer.close();
 	}
 	
+	// Determines intervals for encoding images
 	public int[][] encoder(int newMax) {
 		
 		int interval = (this.maxValue / newMax);
@@ -109,6 +115,7 @@ public class Image {
 		return returnData;
 	}
 	
+	// Helper function for creating new pixel value
 	public int newEncodedValue(int currentMaxValue, int newMax, int interval, int currentValue) {
 		
 		int newValue, i, j;
@@ -127,6 +134,7 @@ public class Image {
 		return newValue;
 	}
 	
+	// Determines interval for decoding images
 	public int[][] decoder(int newMax) {
 		
 		int interval = (newMax / this.maxValue);
@@ -141,6 +149,7 @@ public class Image {
 		return returnData;
 	}
 	
+	// Helper function for restoring values in an interval
 	public int newDecodedValue(int currentMaxValue, int interval, int currentValue) {
 		
 		int newValue, i, j;
@@ -155,6 +164,7 @@ public class Image {
 		return newValue;
 	}
 	
+	// Finds the distortion between original images and decoded images
 	 public int calculateDistortion(Image original) {
 		 int sumOfDif = 0;
 		 for(int i = 0; i < this.height; i++){
@@ -164,7 +174,8 @@ public class Image {
 		 }
 		 return (sumOfDif/(this.height*this.width));
 	 }
-		
+	
+	 // Creates an error image that shows the differences between the original and reconstructed images
 	public int [][] createErrorImage(int [][] original, int [][] reconstructed, int height, int width) {
 		int [][] error = new int [height][width];	       
 		for (int i = 0; i < height; i++) {
@@ -175,6 +186,7 @@ public class Image {
 		return error;
 	}
 		
+	// Helper function that finds the maximum value for the error images
 	public int findMax(int [][] data, int height, int width) {
 		int max = 0;
 		for (int i = 0; i < height; i++) {
