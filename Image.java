@@ -129,7 +129,7 @@ public class Image {
             }
             
             if (currentValue == currentMaxValue) {
-            	newValue = (newMax-1);
+            	newValue = (newMax - 1);
             	break;
             }
         }
@@ -144,27 +144,13 @@ public class Image {
 		
 		for (int i = 0; i < this.height; i++) {
             for (int j = 0; j < this.width; j++) {
-            	returnData[i][j] = newDecodedValue(this.data[i][j], this.maxValue, interval);
+            	returnData[i][j] = (this.data[i][j]*interval);
             }
         }
 		
 		return returnData;
 	}
 	
-	// Helper function for restoring values in an interval
-	public int newDecodedValue(int currentValue, int currentMaxValue, int interval) {
-		
-		int newValue, i, j;
-		newValue = i = j = 0;
-		
-		for (i = 0, j = 0; j < currentMaxValue; i = (i + interval), j++) {
-			if (currentValue == j) {
-				newValue = (i + ((i + interval)/currentMaxValue));
-                break;
-            }
-        }
-		return newValue;
-	}
 	
 	// Finds the distortion between original images and decoded images
 	 public int calculateDistortion(Image original) {
