@@ -54,19 +54,20 @@ public class Image {
 	Image(Image image, int nextMaxValue, boolean encoderOrDecoder, String tempName) {
 		// If boolean is true, we're encoding, if false, decoding
 		// String is just to keep consistency between naming schemes of files
-		
+		this.maxValue = nextMaxValue;
 		if (encoderOrDecoder == true) {
 			this.data = image.encoder(nextMaxValue);
 			this.filename = (image.filename + "_encoded_" + nextMaxValue);
+			this.maxValue = nextMaxValue - 1;
 		}
 		else {
 			this.data = image.decoder(nextMaxValue);
-			this.filename = (tempName + "_decoded_" + image.maxValue);
+			this.filename = (tempName + "_decoded_" + (image.maxValue + 1));
 		}
 		
 		this.height = image.height;
 		this.width = image.width;
-		this.maxValue = nextMaxValue;
+		
 		this.imageInfo = image.imageInfo;
 		
 	}
